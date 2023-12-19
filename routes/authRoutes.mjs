@@ -2,12 +2,12 @@ import express from 'express';
 import {
   registerUser,
   signin,
-  logout,
+  signout,
 } from '../controllers/authController.mjs';
 
 const router = express.Router();
 
 router.post('/register', registerUser);
-router.get('/logout', logout).post('/login', signin);
+router.get('/signout', signout).post('/signin', signin);
 
 export default router;

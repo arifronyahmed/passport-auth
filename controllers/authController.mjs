@@ -32,7 +32,6 @@ export const registerUser = catchAsync(async (req, res, next) => {
   });
 });
 
-
 export const signin = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -59,9 +58,7 @@ export const signin = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
-export const logout = catchAsync(async (req, res, next) => {
+export const signout = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1];
 
   if (!token) {
@@ -69,15 +66,10 @@ export const logout = catchAsync(async (req, res, next) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.session.destroy((err) => {
-      if (err) {
-        return next(new AppError('Error destroying session', 500));
-      }
-      res.status(200).json({
-        status: 'success',
-        message: 'Logged out successfully',
-      });
+    await jwt.verify(token, process.env.JWT_SECRET);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Logged out successfully',
     });
   } catch (error) {
     return next(new AppError('Invalid or expired token', 401));

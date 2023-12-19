@@ -8,7 +8,7 @@ export default function (passport) {
 
   passport.use(
     new JwtStrategy(opts, (jwtPayload, done) => {
-      User.findById(jwtPayload.userId)
+      User.findById(jwtPayload.id)
         .then((user) => {
           if (user) {
             done(null, user);

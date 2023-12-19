@@ -3,10 +3,10 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import passport from 'passport';
-import session from 'express-session';
 import appError from './controllers/errorController.mjs';
 import passportConfig from './config/passportConfig.mjs';
 import authRoutes from './routes/authRoutes.mjs';
+import secretRoutes from './routes/secretRoutes.mjs';
 
 dotenv.config();
 
@@ -20,19 +20,17 @@ const connectDB = async () => {
   }
 };
 
-const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-});
+
 const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(sessionMiddleware);
+
 app.use(passport.initialize());
 passportConfig(passport);
 
 app.use('/api/v1/auth', authRoutes);
+
+app.use('/api/v1/secret', secretRoutes);
 
 app.all('*', (req, res, next) => {
   res.status(404).json({
@@ -40,7 +38,6 @@ app.all('*', (req, res, next) => {
     message: `can not find ${req.originalUrl}`,
   });
 });
-
 
 app.use(appError);
 
